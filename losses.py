@@ -4,8 +4,8 @@ import torch.nn.functional as F
 def multi_positive_contrastive_loss(video_embeds, caption_embeds, temperature=None, return_debug=False):
 
     B, N, D = caption_embeds.shape
-    v = F.normalize(video_embeds, dim=-1)          # [B, D]
-    c = F.normalize(caption_embeds, dim=-1).view(B * N, D)  # [B*N, D]
+    v = F.normalize(video_embeds, dim=-1)
+    c = F.normalize(caption_embeds, dim=-1).view(B * N, D)
 
     if temperature is None:
         scale = torch.tensor(1.0 / 0.07, device=v.device) # CLIP default
@@ -16,7 +16,7 @@ def multi_positive_contrastive_loss(video_embeds, caption_embeds, temperature=No
         # temperature is a float T, convert to 1/T scale
         scale = torch.tensor(1.0 / float(temperature), device=v.device)
 
-    logits = (v @ c.T) * scale                      # [B, B*N]
+    logits = (v @ c.T) * scale                     
 
     targets = torch.zeros(B, B * N, device=v.device)
     for i in range(B):
