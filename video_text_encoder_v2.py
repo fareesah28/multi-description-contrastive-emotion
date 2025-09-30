@@ -96,18 +96,18 @@ class VideoTextEncoderV2(nn.Module):
         vid = video.view(B * T, C, H, W)
         ctx = torch.enable_grad() if vision_trainable else torch.no_grad()
         with ctx:
-            frame_features = self.image_encoder(vid)  # [B*T, D]
-        frame_features = frame_features.view(B, T, -1)   # [B, T, D]
-        encoded = self.temporal_encoder(frame_features)  # [B, T, D]
-        v = encoded.mean(dim=1)                          # [B, D]
-        return self.video_projection(v)                  # [B, D]
+            frame_features = self.image_encoder(vid)
+        frame_features = frame_features.view(B, T, -1)
+        encoded = self.temporal_encoder(frame_features)
+        v = encoded.mean(dim=1)
+        return self.video_projection(v)
 
     def encode_captions(self, captions_token_ids: torch.Tensor) -> torch.Tensor:
         assert isinstance(captions_token_ids, torch.Tensor), \
             "Expected token IDs tensor of shape [B, 5, L] from collate_fn"
         B, N, L = captions_token_ids.shape
         device = next(self.parameters()).device
-        toks = captions_token_ids.to(device).view(B * N, L)  # [B*N, L]
+        toks = captions_token_ids.to(device).view(B * N, L)
 
         text_fully_frozen = (
             not _any_trainable(self.clip_model.transformer)
@@ -116,12 +116,12 @@ class VideoTextEncoderV2(nn.Module):
         )
         ctx = torch.no_grad() if text_fully_frozen else torch.enable_grad()
         with ctx:
-            x = self.clip_model.encode_text(toks)            # [B*N, D]
+            x = self.clip_model.encode_text(toks)
 
-        x = self.caption_projection(x)                       # [B*N, D]
-        return x.view(B, N, -1)                              # [B, 5, D]
+        x = self.caption_projection(x)
+        return x.view(B, N, -1)
 
     def forward(self, video, captions_token_ids):
-        v = self.encode_video(video)                 # [B, D]
-        c = self.encode_captions(captions_token_ids) # [B, 5, D]
+        v = self.encode_video(video)
+        c = self.encode_captions(captions_token_ids) 
         return v, c
