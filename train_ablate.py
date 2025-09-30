@@ -104,7 +104,7 @@ for epoch in range(epochs):
     model.train(); total_loss = 0.0
     for batch in tqdm(train_loader, desc=f"Epoch {epoch+1}"):
         videos = batch["video"].to(device)
-        captions = batch["captions"]  # token IDs [B, 5, L]
+        captions = batch["captions"]
 
         optimizer.zero_grad(set_to_none=True)
         v_emb, c_emb = model(videos, captions)
@@ -144,11 +144,11 @@ for epoch in range(epochs):
             captions = batch["captions"]
             B = videos.size(0)
 
-            v_emb, c_emb = model(videos, captions)     # [B, D], [B, 5, D]
-            cap_mean = c_emb.mean(dim=1)               # [B, D]
+            v_emb, c_emb = model(videos, captions)
+            cap_mean = c_emb.mean(dim=1)
             v = F.normalize(v_emb, dim=-1); c = F.normalize(cap_mean, dim=-1)
 
-            sims = v @ c.T                              # [B, B]
+            sims = v @ c.T                              
             ranks = sims.argsort(dim=1, descending=True)
             correct = torch.arange(B, device=device)
 
