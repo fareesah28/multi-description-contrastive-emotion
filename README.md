@@ -1,6 +1,6 @@
 ## Subjective Emotion Modelling via Multi-description Contrastive Learning
 
-This repository contains all code scripts used for the **final project** of the MSc Artificial Intelligence programme at City St George’s, University of London.
+This repository contains all code scripts used for the final project of the MSc Artificial Intelligence programme at City St George’s, University of London.
 
 ⚠️ **Note:** This repo serves as the final code archive. The **latest commit messages** reflect exactly what each script is used for.
 
