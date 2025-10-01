@@ -139,7 +139,7 @@ for epoch in range(epochs):
     recall1_total = recall5_total = recall10_total = 0
     cos_sims_total = 0.0; n_samples = 0
     with torch.no_grad():
-        for batch in tqdm(val_loader, desc="🔎 Validating (batch mean-caption)"):
+        for batch in tqdm(val_loader, desc="Validating (batch mean-caption)"):
             videos = batch["video"].to(device)
             captions = batch["captions"]
             B = videos.size(0)
